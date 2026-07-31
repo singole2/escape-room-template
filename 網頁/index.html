@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>神農嘗百草 — 國文閱讀理解密室逃脫</title>
+  <style>
+    :root{
+      --main:#FFD166; /* 主色：暖黃 */
+      --accent:#0A84FF; /* 次色：藍 */
+      --bg:#f7f5ef;
+      --card:#ffffff;
+      --text:#222;
+    }
+    body{font-family: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,var(--bg),#fff); color:var(--text); margin:0; padding:24px}
+    .wrap{max-width:980px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px}
+    header .logo{width:88px;height:88px;background:var(--main);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+    h1{margin:0;font-size:1.4rem}
+    .meta{color:#555;font-size:0.9rem;margin-top:6px}
+    .lesson, .quiz{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);margin-top:18px}
+    pre.lesson-text{white-space:pre-wrap;font-size:1rem;line-height:1.8;margin:0}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    button{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .placeholder-avatar{width:120px}
+    .question{border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid #eee}
+    .choices{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .choice{background:#f7f7f9;padding:10px;border-radius:8px;cursor:pointer}
+    .choice.correct{background:#dff7e0;border:1px solid #b3e6b0}
+    .choice.wrong{background:#ffdfe0;border:1px solid #ffb6b6}
+    footer{margin-top:28px;color:#666;font-size:0.9rem}
+    .small{font-size:0.9rem;color:#666}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">密室</div>
+      <div>
+        <h1>神農嘗百草 — 國文閱讀理解密室逃脫</h1>
+        <div class="meta">課文來源：lessons/神農嘗百草.txt · 自動產生題庫示範</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <img src="assets/img/character.svg" alt="avatar" class="placeholder-avatar">
+        <div class="small">可替換右側人物：assets/img/character.svg</div>
+      </div>
+    </header>
+
+    <section class="lesson">
+      <h2>課文</h2>
+      <pre id="lesson" class="lesson-text">載入中…</pre>
+      <div class="controls">
+        <button id="open-raw">在 GitHub 檢視原始檔</button>
+        <button id="generate">產生題庫（5 題示範）</button>
+      </div>
+    </section>
+
+    <section class="quiz" id="quizSection" style="display:none">
+      <h2>題目</h2>
+      <div id="questions"></div>
+      <div id="result" style="margin-top:12px"></div>
+    </section>
+
+    <footer>
+      如需完整自動題庫與五關/十關模式，請在 ChatGPT 對話中下：「請讀取 escape_room_generator_skill.md，幫我為〈神農嘗百草〉建立密室逃脫網頁。」或聯絡管理員做進階設定。
+    </footer>
+  </div>
+
+<script>
+const rawUrl = "./lessons/神農嘗百草.txt";
+// 載入課文
+fetch(rawUrl).then(r=>{
+  if(!r.ok) throw new Error('無法載入課文');
+  return r.text();
+}).then(txt=>{
+  document.getElementById('lesson').textContent = txt;
+}).catch(e=>{
+  document.getElementById('lesson').textContent = '無法載入課文：' + e.message + '\n\n請確認 lessons/ 神農嘗百草.txt 是否存在。';
+});
+
+// 簡易題庫（根據課文內容手工建立的示範題）
+const questions = [
+  {
+    id:'q1',
+    q:'神農氏（炎帝）為了幫助人民主要做了下列哪一件事？',
+    choices:[
+      '教導人們種植穀物',
+      '建立首都城市',
+      '發明造紙術',
+      '統一度量衡'
+    ],
+    answer:0
+  },
+  {
+    id:'q2',
+    q:'傳說中炎帝的外表有什麼特徵？',
+    choices:['頭上長牛角','有翅膀','長有魚尾','戴皇冠'],
+    answer:0
+  },
+  {
+    id:'q3',
+    q:'「琉璃肚」的功能為何？',
+    choices:['可以看見內臟以判斷吃下食物是否有害','能使植物開花','能預測天氣','能治病'],
+    answer:0
+  },
+  {
+    id:'q4',
+    q:'天神贈與炎帝的「赭鞭」具有什麼用途？',
+    choices:['對植物輕揮可使顏色改變以辨識毒性','能使植物長出果實','能飛行','能治好毒草造成的中毒'],
+    answer:0
+  },
+  {
+    id:'q5',
+    q:'死後炎帝被任命為何職責？',
+    choices:['掌管農業，保佑農民豐收','掌管水利工程','成為戰神','管理工商貿易'],
+    answer:0
+  }
+];
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+}
+
+function renderQuestions(){
+  const container = document.getElementById('questions');container.innerHTML='';
+  let score=0;
+  questions.forEach((qs,idx)=>{
+    const wrap=document.createElement('div');wrap.className='question';
+    const qh=document.createElement('div');qh.textContent=(idx+1)+'. '+qs.q;wrap.appendChild(qh);
+    const choices = qs.choices.map((c,i)=>({text:c,idx:i}));
+    shuffle(choices);
+    const chdiv=document.createElement('div');chdiv.className='choices';
+    choices.forEach(c=>{
+      const btn=document.createElement('button');btn.className='choice';btn.textContent=c.text;btn.onclick=()=>{
+        // 找到原始答案文字
+        const correctText = qs.choices[qs.answer];
+        if(c.text===correctText){
+          btn.classList.add('correct');
+          score++;
+        } else {
+          btn.classList.add('wrong');
+          // 標示正確答案
+          Array.from(chdiv.children).forEach(x=>{if(x.textContent===correctText) x.classList.add('correct');});
+        }
+        // 禁用所有選項
+        Array.from(chdiv.children).forEach(x=>x.disabled=true);
+        document.getElementById('result').textContent = `得分：${score} / ${questions.length}`;
+      };
+      chdiv.appendChild(btn);
+    });
+    wrap.appendChild(chdiv);
+    container.appendChild(wrap);
+  });
+}
+
+document.getElementById('generate').addEventListener('click',()=>{document.getElementById('quizSection').style.display='block';renderQuestions();});
+
+// 在 GitHub 打開原始檔案
+document.getElementById('open-raw').addEventListener('click',()=>{
+  window.open('https://github.com/singole2/escape-room-template/blob/main/lessons/%E7%A5%9E%E8%BE%B2%E5%98%97%E7%99%BE%E8%8D%89.txt','_blank');
+});
+</script>
+</body>
+</html>
