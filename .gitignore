@@ -1,8 +1,3 @@
-# OS generated files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# Office temporary files
-~$*
+node_modules/
+.DS_Store
+.vscode/

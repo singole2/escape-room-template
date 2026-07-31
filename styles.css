@@ -1,0 +1,61 @@
+:root{
+  /* 可依據課文色系調整 */
+  --sky-top: #f6e8b1;
+  --sky-mid: #f2d08b;
+  --sky-bot: #e3b85f;
+  --accent: #6a3d00;
+  --card-bg: #fff9f0;
+  --glass: rgba(255,255,255,0.6);
+  --text: #2b1f0f;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: "Noto Sans TC", system-ui, -apple-system, "Helvetica Neue", Arial;
+  color:var(--text);
+  background: linear-gradient(180deg,var(--sky-top),var(--sky-mid),var(--sky-bot));
+  min-height:100vh;
+  padding:24px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+.site{width:100%;max-width:980px}
+
+.hero{
+  text-align:center;
+  margin-bottom:18px;
+}
+.hero h1{margin:8px 0;font-size:1.8rem}
+.subtitle{margin:0;color:#4a3417}
+
+.card{
+  background:var(--card-bg);
+  border-radius:12px;
+  padding:16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  margin-bottom:14px;
+}
+
+.controls{display:flex;gap:8px;align-items:center;margin-top:8px}
+.btn{background:var(--accent);color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer}
+.small{padding:6px 8px;font-size:0.9rem}
+
+.hidden{display:none}
+
+.question p{font-size:1.05rem;margin:8px 0}
+.options{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.options li{background:var(--glass);padding:10px;border-radius:8px;cursor:pointer}
+.options li:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.08)}
+.options li.correct{outline:3px solid #2ecc71}
+.options li.wrong{outline:3px solid #e74c3c}
+
+#hud{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.floating-char{
+  position:fixed;right:18px;bottom:18px;width:120px;opacity:0.95;
+  transition: transform 4s ease-in-out; animation:floaty 6s infinite ease-in-out;
+}
+@keyframes floaty{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+.certificate{border:4px dashed var(--accent);padding:12px;border-radius:12px;margin-top:12px}
